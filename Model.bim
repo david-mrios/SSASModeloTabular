@@ -1,0 +1,973 @@
+{
+  "name": "SemanticModel",
+  "compatibilityLevel": 1500,
+  "model": {
+    "culture": "es-NI",
+    "discourageImplicitMeasures": true,
+    "dataSources": [
+      {
+        "type": "structured",
+        "name": "SQL/localhost;TecnoNicDW",
+        "connectionDetails": {
+          "protocol": "tds",
+          "address": {
+            "server": "localhost"
+          },
+          "authentication": null,
+          "query": null
+        },
+        "credential": {
+          "AuthenticationKind": "ServiceAccount",
+          "EncryptConnection": false
+        }
+      }
+    ],
+    "tables": [
+      {
+        "name": "Date",
+        "columns": [
+          {
+            "name": "Date_Key",
+            "dataType": "int64",
+            "sourceColumn": "Date_Key"
+          },
+          {
+            "name": "Date",
+            "dataType": "dateTime",
+            "isHidden": true,
+            "sourceColumn": "Date"
+          },
+          {
+            "name": "Day",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "Day"
+          },
+          {
+            "name": "Month",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "Month"
+          },
+          {
+            "name": "Year",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "Year"
+          },
+          {
+            "name": "Weekday",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "Weekday"
+          },
+          {
+            "name": "Month_Name",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "Month_Name"
+          },
+          {
+            "name": "CalendarQuarter",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "CalendarQuarter"
+          },
+          {
+            "name": "CalendarYear",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "CalendarYear"
+          },
+          {
+            "name": "FiscalQuarter",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "FiscalQuarter"
+          },
+          {
+            "name": "FiscalYear",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "FiscalYear"
+          },
+          {
+            "name": "FiscalSemester",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "FiscalSemester"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = #\"SQL/localhost;TecnoNicDW\",",
+                "    TecnoNicDW = Source{[Name=\"TecnoNicDW\"]}[Data],",
+                "    dbo_dim_Date = TecnoNicDW{[Schema=\"dbo\",Item=\"dim_Date\"]}[Data]",
+                "in",
+                "    dbo_dim_Date"
+              ]
+            }
+          }
+        ],
+        "hierarchies": [
+          {
+            "name": "HierarchyDate",
+            "levels": [
+              {
+                "name": "Year",
+                "ordinal": 0,
+                "column": "Year"
+              },
+              {
+                "name": "Month",
+                "ordinal": 1,
+                "column": "Month"
+              },
+              {
+                "name": "Day",
+                "ordinal": 2,
+                "column": "Day"
+              },
+              {
+                "name": "Date",
+                "ordinal": 3,
+                "column": "Date"
+              }
+            ]
+          },
+          {
+            "name": "HierarchyDetailDate",
+            "levels": [
+              {
+                "name": "Weekday",
+                "ordinal": 0,
+                "column": "Weekday"
+              },
+              {
+                "name": "Month_Name",
+                "ordinal": 1,
+                "column": "Month_Name"
+              }
+            ]
+          },
+          {
+            "name": "HierarchyFiscal",
+            "levels": [
+              {
+                "name": "FiscalSemester",
+                "ordinal": 0,
+                "column": "FiscalSemester"
+              },
+              {
+                "name": "CalendarQuarter",
+                "ordinal": 1,
+                "column": "CalendarQuarter"
+              },
+              {
+                "name": "CalendarYear",
+                "ordinal": 2,
+                "column": "CalendarYear"
+              },
+              {
+                "name": "FiscalQuarter",
+                "ordinal": 3,
+                "column": "FiscalQuarter"
+              },
+              {
+                "name": "FiscalYear",
+                "ordinal": 4,
+                "column": "FiscalYear"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Time Intelligence",
+        "calculationGroup": {
+          "calculationItems": [
+            {
+              "name": "PY",
+              "expression": [
+                "CALCULATE (SELECTEDMEASURE(), SAMEPERIODLASTYEAR( 'Date' [Date] ) )",
+                ""
+              ]
+            },
+            {
+              "name": "QTD",
+              "expression": "CALCULATE (SELECTEDMEASURE(), DATESQTD( 'Date' [Date] ) )"
+            },
+            {
+              "name": "YTD",
+              "expression": "CALCULATE (SELECTEDMEASURE(), DATESYTD( 'Date' [Date] ) )"
+            }
+          ]
+        },
+        "columns": [
+          {
+            "name": "CalculationItemColumn 1",
+            "dataType": "string",
+            "sourceColumn": "Name"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "CalculationGroup 1",
+            "mode": "import",
+            "source": {
+              "type": "calculationGroup"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Customer",
+        "columns": [
+          {
+            "name": "Customer_Key",
+            "dataType": "int64",
+            "sourceColumn": "Customer_Key"
+          },
+          {
+            "name": "FirstName",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "FirstName"
+          },
+          {
+            "name": "LastName",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "LastName"
+          },
+          {
+            "name": "Email",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "Email"
+          },
+          {
+            "name": "Phone",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "Phone"
+          },
+          {
+            "name": "Address",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "Address"
+          },
+          {
+            "name": "City",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "City"
+          },
+          {
+            "name": "Country",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "Country"
+          },
+          {
+            "name": "State",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "State"
+          },
+          {
+            "name": "Postal_Code",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "Postal_Code"
+          },
+          {
+            "name": "Loyalty_Points",
+            "dataType": "int64",
+            "sourceColumn": "Loyalty_Points"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = #\"SQL/localhost;TecnoNicDW\",",
+                "    TecnoNicDW = Source{[Name=\"TecnoNicDW\"]}[Data],",
+                "    dbo_dim_Customer = TecnoNicDW{[Schema=\"dbo\",Item=\"dim_Customer\"]}[Data],",
+                "    #\"Remove Empty\" = Table.SelectRows(dbo_dim_Customer, each [Customer_Key] <> null and [Customer_Key] <> \"\"),",
+                "    #\"Removed Columns\" = Table.RemoveColumns(#\"Remove Empty\",{\"_Source_Key\", \"StartDate\", \"EndDate\", \"Fact_Shipping\"}),",
+                "    #\"Kept First Rows\" = Table.FirstN(#\"Removed Columns\",1000)",
+                "in",
+                "    #\"Kept First Rows\""
+              ]
+            }
+          }
+        ],
+        "hierarchies": [
+          {
+            "name": "HierarchyPersonalData ",
+            "levels": [
+              {
+                "name": "FirstName",
+                "ordinal": 0,
+                "column": "FirstName"
+              },
+              {
+                "name": "LastName",
+                "ordinal": 1,
+                "column": "LastName"
+              },
+              {
+                "name": "Email",
+                "ordinal": 2,
+                "column": "Email"
+              },
+              {
+                "name": "Phone",
+                "ordinal": 3,
+                "column": "Phone"
+              }
+            ]
+          },
+          {
+            "name": "HierarchyAddress",
+            "levels": [
+              {
+                "name": "Country",
+                "ordinal": 3,
+                "column": "Country"
+              },
+              {
+                "name": "Postal_Code",
+                "ordinal": 4,
+                "column": "Postal_Code"
+              },
+              {
+                "name": "City",
+                "ordinal": 1,
+                "column": "City"
+              },
+              {
+                "name": "State",
+                "ordinal": 2,
+                "column": "State"
+              },
+              {
+                "name": "Address",
+                "ordinal": 0,
+                "column": "Address"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Product",
+        "columns": [
+          {
+            "name": "Product_Key",
+            "dataType": "int64",
+            "sourceColumn": "Product_Key"
+          },
+          {
+            "name": "Name",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "Name"
+          },
+          {
+            "name": "Date_Added",
+            "dataType": "dateTime",
+            "isHidden": true,
+            "sourceColumn": "Date_Added"
+          },
+          {
+            "name": "Dimensions",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "Dimensions"
+          },
+          {
+            "name": "Weight",
+            "dataType": "double",
+            "isHidden": true,
+            "sourceColumn": "Weight"
+          },
+          {
+            "name": "Category_Name",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "Category_Name"
+          },
+          {
+            "name": "Brand_Name",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "Brand_Name"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = #\"SQL/localhost;TecnoNicDW\",",
+                "    TecnoNicDW = Source{[Name=\"TecnoNicDW\"]}[Data],",
+                "    dbo_dim_Product = TecnoNicDW{[Schema=\"dbo\",Item=\"dim_Product\"]}[Data],",
+                "    #\"Remove Empty\" = Table.SelectRows(dbo_dim_Product, each [Product_Key] <> null and [Product_Key] <> \"\"),",
+                "    #\"Removed Columns\" = Table.RemoveColumns(#\"Remove Empty\",{\"_Source_Key\", \"Fact_Shipping\", \"EndDate\", \"StartDate\"}),",
+                "    #\"Kept First Rows\" = Table.FirstN(#\"Removed Columns\",1000)",
+                "in",
+                "    #\"Kept First Rows\""
+              ]
+            }
+          }
+        ],
+        "hierarchies": [
+          {
+            "name": "HierarchyProduct",
+            "levels": [
+              {
+                "name": "Weight",
+                "ordinal": 3,
+                "column": "Weight"
+              },
+              {
+                "name": "Dimensions",
+                "ordinal": 2,
+                "column": "Dimensions"
+              },
+              {
+                "name": "Name",
+                "ordinal": 0,
+                "column": "Name"
+              },
+              {
+                "name": "Date_Added",
+                "ordinal": 1,
+                "column": "Date_Added"
+              }
+            ]
+          },
+          {
+            "name": "HierarchyClassification",
+            "levels": [
+              {
+                "name": "Category_Name",
+                "ordinal": 0,
+                "column": "Category_Name"
+              },
+              {
+                "name": "Brand_Name",
+                "ordinal": 1,
+                "column": "Brand_Name"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Order",
+        "columns": [
+          {
+            "name": "Order_Key",
+            "dataType": "int64",
+            "sourceColumn": "Order_Key"
+          },
+          {
+            "name": "Payment_Method",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "Payment_Method"
+          },
+          {
+            "name": "Status",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "Status"
+          },
+          {
+            "name": "Order_Date",
+            "dataType": "dateTime",
+            "isHidden": true,
+            "sourceColumn": "Order_Date"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = #\"SQL/localhost;TecnoNicDW\",",
+                "    TecnoNicDW = Source{[Name=\"TecnoNicDW\"]}[Data],",
+                "    dbo_dim_Order = TecnoNicDW{[Schema=\"dbo\",Item=\"dim_Order\"]}[Data],",
+                "    #\"Filtered Rows\" = Table.SelectRows(dbo_dim_Order, each [Order_Key] <> null and [Order_Key] <> \"\"),",
+                "    #\"Removed Columns\" = Table.RemoveColumns(#\"Filtered Rows\",{\"Fact_Shipping\", \"EndDate\", \"StartDate\"}),",
+                "    #\"Kept First Rows\" = Table.FirstN(#\"Removed Columns\",1000),",
+                "    #\"Removed Columns1\" = Table.RemoveColumns(#\"Kept First Rows\",{\"_Source_Key\"})",
+                "in",
+                "    #\"Removed Columns1\""
+              ]
+            }
+          }
+        ],
+        "hierarchies": [
+          {
+            "name": "HierarchyOrder",
+            "levels": [
+              {
+                "name": "Payment_Method",
+                "ordinal": 0,
+                "column": "Payment_Method"
+              },
+              {
+                "name": "Status",
+                "ordinal": 1,
+                "column": "Status"
+              },
+              {
+                "name": "Order_Date",
+                "ordinal": 2,
+                "column": "Order_Date"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Location",
+        "columns": [
+          {
+            "name": "Location_Key",
+            "dataType": "int64",
+            "sourceColumn": "Location_Key"
+          },
+          {
+            "name": "Shipping_Address",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "Shipping_Address"
+          },
+          {
+            "name": "Shipping_State",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "Shipping_State"
+          },
+          {
+            "name": "Shipping_Country",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "Shipping_Country"
+          },
+          {
+            "name": "Shipping_City",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "Shipping_City"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = #\"SQL/localhost;TecnoNicDW\",",
+                "    TecnoNicDW = Source{[Name=\"TecnoNicDW\"]}[Data],",
+                "    dbo_dim_Location = TecnoNicDW{[Schema=\"dbo\",Item=\"dim_Location\"]}[Data],",
+                "    #\"Removed Columns\" = Table.RemoveColumns(dbo_dim_Location,{\"_Source_Key\"}),",
+                "    #\"Filtered Rows\" = Table.SelectRows(#\"Removed Columns\", each [Location_Key] <> null and [Location_Key] <> \"\"),",
+                "    #\"Removed Columns1\" = Table.RemoveColumns(#\"Filtered Rows\",{\"StartDate\", \"EndDate\", \"Fact_Shipping\"}),",
+                "    #\"Kept First Rows\" = Table.FirstN(#\"Removed Columns1\",1000)",
+                "in",
+                "    #\"Kept First Rows\""
+              ]
+            }
+          }
+        ],
+        "hierarchies": [
+          {
+            "name": "HierarchyShip",
+            "levels": [
+              {
+                "name": "Shipping_Country",
+                "ordinal": 0,
+                "column": "Shipping_Country"
+              },
+              {
+                "name": "Shipping_State",
+                "ordinal": 1,
+                "column": "Shipping_State"
+              },
+              {
+                "name": "Shipping_City",
+                "ordinal": 2,
+                "column": "Shipping_City"
+              },
+              {
+                "name": "Shipping_Address",
+                "ordinal": 3,
+                "column": "Shipping_Address"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Fact_Shipping",
+        "columns": [
+          {
+            "name": "Shipping_Key",
+            "dataType": "int64",
+            "sourceColumn": "Shipping_Key"
+          },
+          {
+            "name": "Order_Key",
+            "dataType": "int64",
+            "sourceColumn": "Order_Key"
+          },
+          {
+            "name": "Customer_Key",
+            "dataType": "int64",
+            "sourceColumn": "Customer_Key"
+          },
+          {
+            "name": "Product_Key",
+            "dataType": "int64",
+            "sourceColumn": "Product_Key"
+          },
+          {
+            "name": "Location_Key",
+            "dataType": "int64",
+            "sourceColumn": "Location_Key"
+          },
+          {
+            "name": "Shipping_Company",
+            "dataType": "string",
+            "sourceColumn": "Shipping_Company"
+          },
+          {
+            "name": "Shipping_Method",
+            "dataType": "string",
+            "sourceColumn": "Shipping_Method"
+          },
+          {
+            "name": "Shipping_Date_Key",
+            "dataType": "int64",
+            "sourceColumn": "Shipping_Date_Key"
+          },
+          {
+            "name": "Delivery_Date_Key",
+            "dataType": "int64",
+            "sourceColumn": "Delivery_Date_Key"
+          },
+          {
+            "name": "Quantity",
+            "dataType": "int64",
+            "sourceColumn": "Quantity"
+          },
+          {
+            "name": "Unit_Price",
+            "dataType": "double",
+            "sourceColumn": "Unit_Price"
+          },
+          {
+            "name": "Sales_Amount",
+            "dataType": "double",
+            "sourceColumn": "Sales_Amount"
+          },
+          {
+            "name": "Tax_Amount",
+            "dataType": "double",
+            "sourceColumn": "Tax_Amount"
+          },
+          {
+            "name": "Shipping_Cost",
+            "dataType": "double",
+            "sourceColumn": "Shipping_Cost"
+          },
+          {
+            "type": "calculated",
+            "name": "Total_Price",
+            "dataType": "double",
+            "isDataTypeInferred": true,
+            "expression": "[Sales_Amount] + [Tax_Amount] + [Shipping_Cost]"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = #\"SQL/localhost;TecnoNicDW\",",
+                "    TecnoNicDW = Source{[Name=\"TecnoNicDW\"]}[Data],",
+                "    SSAS_vw_Fact_Shipping = TecnoNicDW{[Schema=\"SSAS\",Item=\"vw_Fact_Shipping\"]}[Data],",
+                "    #\"Removed Columns\" = Table.RemoveColumns(SSAS_vw_Fact_Shipping,{\"Lineage_Key\"}),",
+                "    #\"Filtered Rows\" = Table.SelectRows(#\"Removed Columns\", each [Shipping_Key] <> null and [Shipping_Key] <> \"\"),",
+                "    #\"Kept First Rows\" = Table.FirstN(#\"Filtered Rows\",1000)",
+                "in",
+                "    #\"Kept First Rows\""
+              ]
+            }
+          }
+        ],
+        "measures": [
+          {
+            "name": "Sum of Quantity",
+            "expression": "SUM([Quantity])"
+          },
+          {
+            "name": "Sum of Unit_Price",
+            "expression": "SUM([Unit_Price])"
+          },
+          {
+            "name": "Sales Amount by ship",
+            "expression": "SUM([Sales_Amount])",
+            "kpi": {
+              "targetExpression": "'Fact_Shipping'[KPI Total_Price]",
+              "statusExpression": [
+                "var x='Fact_Shipping'[Sales Amount by ship]/'Fact_Shipping'[_Sales Amount by ship Goal] return",
+                "            if(ISBLANK(x),BLANK(),",
+                "                    If(x<0.33,-1,",
+                "\t                If(x<0.66,0,1)",
+                "                )",
+                "            )",
+                "            "
+              ],
+              "annotations": [
+                {
+                  "name": "GoalType",
+                  "value": "Measure"
+                },
+                {
+                  "name": "KpiStatusType",
+                  "value": "Linear"
+                },
+                {
+                  "name": "KpiThresholdType",
+                  "value": "Percentage"
+                },
+                {
+                  "name": "KpiThresholdOrdering",
+                  "value": "Ascending"
+                },
+                {
+                  "name": "KpiThresholdCount",
+                  "value": "2"
+                },
+                {
+                  "name": "KpiThreshold_0",
+                  "value": "33"
+                },
+                {
+                  "name": "KpiThreshold_1",
+                  "value": "66"
+                }
+              ]
+            }
+          },
+          {
+            "name": "Sum of Tax_Amount",
+            "expression": "SUM([Tax_Amount])",
+            "kpi": {
+              "targetExpression": "'Fact_Shipping'[KPI_Tax_Status]",
+              "statusGraphic": "Traffic Light - Single",
+              "statusExpression": [
+                "var x='Fact_Shipping'[Sum of Tax_Amount]/'Fact_Shipping'[_Sum of Tax_Amount Goal] return",
+                "            if(ISBLANK(x),BLANK(),",
+                "                    If(x<0.4,-1,",
+                "\t                If(x<0.8,0,1)",
+                "                )",
+                "            )",
+                "            "
+              ],
+              "annotations": [
+                {
+                  "name": "GoalType",
+                  "value": "Measure"
+                },
+                {
+                  "name": "KpiStatusType",
+                  "value": "Linear"
+                },
+                {
+                  "name": "KpiThresholdType",
+                  "value": "Percentage"
+                },
+                {
+                  "name": "KpiThresholdOrdering",
+                  "value": "Ascending"
+                },
+                {
+                  "name": "KpiThresholdCount",
+                  "value": "2"
+                },
+                {
+                  "name": "KpiThreshold_0",
+                  "value": "40"
+                },
+                {
+                  "name": "KpiThreshold_1",
+                  "value": "80"
+                }
+              ]
+            }
+          },
+          {
+            "name": "Sum of Shipping_Cost",
+            "expression": "SUM([Shipping_Cost])"
+          },
+          {
+            "name": "Order Quantity by Delivery Date",
+            "expression": " CALCULATE( SUM('Fact_Shipping'[Quantity]), USERELATIONSHIP('Date'[Date_Key], 'Fact_Shipping'[Delivery_Date_Key]) )",
+            "kpi": {
+              "targetExpression": "'Fact_Shipping'[KPI_Order_Quantity_Delivery]",
+              "statusGraphic": "Traffic Light - Single",
+              "statusExpression": [
+                "var x='Fact_Shipping'[Order Quantity by Delivery Date]/'Fact_Shipping'[_Order Quantity by Delivery Date Goal] return",
+                "            if(ISBLANK(x),BLANK(),",
+                "                    If(x<0.4,-1,",
+                "\t                If(x<0.8,0,1)",
+                "                )",
+                "            )",
+                "            "
+              ],
+              "annotations": [
+                {
+                  "name": "GoalType",
+                  "value": "Measure"
+                },
+                {
+                  "name": "KpiStatusType",
+                  "value": "Linear"
+                },
+                {
+                  "name": "KpiThresholdType",
+                  "value": "Percentage"
+                },
+                {
+                  "name": "KpiThresholdOrdering",
+                  "value": "Ascending"
+                },
+                {
+                  "name": "KpiThresholdCount",
+                  "value": "2"
+                },
+                {
+                  "name": "KpiThreshold_0",
+                  "value": "40"
+                },
+                {
+                  "name": "KpiThreshold_1",
+                  "value": "80"
+                }
+              ]
+            }
+          },
+          {
+            "name": "Order Quantity by Ship Date",
+            "expression": " CALCULATE( SUM('Fact_Shipping'[Quantity]), USERELATIONSHIP('Date'[Date_Key], 'Fact_Shipping'[Shipping_Date_Key]) )"
+          },
+          {
+            "name": "KPI Total_Price",
+            "expression": "SUM([Total_Price])"
+          },
+          {
+            "name": "KPI_Order_Quantity_Delivery",
+            "expression": " SUMX(FILTER(Fact_Shipping, Fact_Shipping[Delivery_Date_Key] = [Delivery_Date_Key]), Fact_Shipping[Quantity])"
+          },
+          {
+            "name": "KPI_Tax_Status",
+            "expression": [
+              " ",
+              "    SWITCH(",
+              "        TRUE(),",
+              "        [Sum of Tax_Amount] < 10000, \"Bajo\",",
+              "        [Sum of Tax_Amount] >= 10000 && [Sum of Tax_Amount] < 30000, \"Medio\",",
+              "        [Sum of Tax_Amount] >= 30000, \"Alto\",",
+              "        \"Sin Datos\"",
+              "    )"
+            ]
+          }
+        ]
+      }
+    ],
+    "relationships": [
+      {
+        "name": "6d144f09-0e78-436a-bcad-ee5c108a92f8",
+        "fromTable": "Fact_Shipping",
+        "fromColumn": "Customer_Key",
+        "toTable": "Customer",
+        "toColumn": "Customer_Key"
+      },
+      {
+        "name": "f3768735-980d-4591-ade8-a165353af6ed",
+        "fromCardinality": "one",
+        "fromTable": "Order",
+        "fromColumn": "Order_Key",
+        "toTable": "Fact_Shipping",
+        "toColumn": "Order_Key",
+        "crossFilteringBehavior": "bothDirections"
+      },
+      {
+        "name": "cd35bf27-a742-429a-a044-5200921b6445",
+        "fromTable": "Fact_Shipping",
+        "fromColumn": "Location_Key",
+        "toTable": "Location",
+        "toColumn": "Location_Key"
+      },
+      {
+        "name": "4be7f40c-da53-4536-866e-8fa7315f83f8",
+        "fromTable": "Fact_Shipping",
+        "fromColumn": "Product_Key",
+        "toTable": "Product",
+        "toColumn": "Product_Key"
+      },
+      {
+        "name": "ddfb4c56-6de5-48bd-a362-0f4cb387481e",
+        "fromTable": "Fact_Shipping",
+        "fromColumn": "Shipping_Date_Key",
+        "toTable": "Date",
+        "toColumn": "Date_Key"
+      },
+      {
+        "name": "2c43b5f9-9ace-4254-9e6c-0df1255e0dc9",
+        "fromTable": "Fact_Shipping",
+        "fromColumn": "Delivery_Date_Key",
+        "toTable": "Date",
+        "toColumn": "Date_Key",
+        "isActive": false
+      }
+    ],
+    "annotations": [
+      {
+        "name": "ClientCompatibilityLevel",
+        "value": "600"
+      }
+    ]
+  },
+  "id": "SemanticModel"
+}
